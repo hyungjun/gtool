@@ -8,7 +8,7 @@ setup( name                 = 'gtool',
        author               = 'Hyungjun Kim',
        author_email         = 'hyungjun@gmail.com',
        url                  = '',
-       package_dir          = {'cf.io.gtool':'gtool'},
+       package_dir          = {'cf.io.gtool':'./'},
        packages             = ['cf.io.gtool'],
        install_requires     = ['numpy'],
       )
