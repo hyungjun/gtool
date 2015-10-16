@@ -1,2 +1,1 @@
-# cf.io.gtool
-gtool io sub module
+io/gtool/README.md

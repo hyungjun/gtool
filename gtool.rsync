@@ -1,0 +1,4 @@
+#! /bin/sh
+
+rsync -auv  ../coreFrame/ --include "io/" --include "gtool/***" --exclude "*" ./
+
