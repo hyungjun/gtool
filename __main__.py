@@ -13,7 +13,7 @@
 import  os,sys
 from    optparse        import OptionParser
 
-from    cf2.io.gtool                import gtFile
+from    gtfile          import gtFile
 from    cf2.GridCoordinates.regrid  import regrid
 
 

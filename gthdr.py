@@ -86,13 +86,25 @@ class __gtHdrFmt__(object):
         headers : <list> of header
         '''
 
+        keys    = self.fmt.keys()
+
         if headers == None:
+
             header  = [ ( v[1]%v[2], ) for k,v in self.fmt.items() ]
 
+            # for self.iomode == 'w+':
+            kwargs[ "CSIGN" ]   = 'cf.io.gtool %s'%__gtConfig__.version
+            kwargs[ "CDATE" ]   = datetime.datetime.now().strftime('%Y%m%d %H%M%S')
+            # ------------------------
         else:
+
             header  = zip(*headers)
 
-        keys    = self.fmt.keys()
+            # for self.iomode == 'r+':
+            kwargs[ "MSIGN" ]   = 'cf.io.gtool %s'%__gtConfig__.version
+            kwargs[ "MDATE" ]   = datetime.datetime.now().strftime('%Y%m%d %H%M%S')
+            # ------------------------
+
 
         for k,v in kwargs.items():
 

@@ -22,6 +22,8 @@ class __gtConfig__(object):
 
     chksumHdr   = list( struct.pack( '>i4', hdrsize-8 ) ) # w/o checksum
 
+    version     = '0.5b'
+
 
 
 @ETA
