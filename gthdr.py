@@ -17,7 +17,11 @@ from    optparse        import OptionParser
 import  datetime
 
 from    numpy           import array, dtype
-from    cf2.utils       import OrderedDict
+
+try:
+    from    cf2.utils   import OrderedDict
+except:
+    from    collection  import OrderedDict
 
 from    gtcfg           import __gtConfig__
 
