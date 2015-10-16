@@ -13,7 +13,8 @@
 import  os,sys
 from    optparse        import OptionParser
 
-from    gtfile          import gtFile
+from    gtfile          import gtFile           as gtopen
+
 
 def main(args,opts):
     print args
