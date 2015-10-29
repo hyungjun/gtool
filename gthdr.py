@@ -21,7 +21,7 @@ from    numpy           import array, dtype
 try:
     from    cf2.utils   import OrderedDict
 except:
-    from    collection  import OrderedDict
+    from    collections import OrderedDict
 
 from    gtcfg           import __gtConfig__
 

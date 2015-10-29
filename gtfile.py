@@ -21,7 +21,7 @@ from    numpy                       import memmap, array, concatenate, resize
 try:
     from    cf2.utils               import OrderedDict
 except:
-    from    collection              import OrderedDict
+    from    collections             import OrderedDict
 
 from    gtcfg                       import __gtConfig__
 from    gtchunk                     import __gtChunk__
