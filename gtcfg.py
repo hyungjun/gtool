@@ -12,7 +12,6 @@
 
 import  os,sys
 from    optparse        import OptionParser
-from    cf.util.LOGGER  import *
 
 import  struct
 
@@ -25,8 +24,6 @@ class __gtConfig__(object):
     version     = '0.5b'
 
 
-
-@ETA
 def main(args,opts):
     print args
     print opts
