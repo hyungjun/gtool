@@ -4,12 +4,12 @@
 
 Installation
 ------------
-### Dependency
-numpy only
-
 ```
 $ python setup.py install
 ```
+### Dependency
+python 2.x(?) or later
+numpy 1.x(?)
 
 Chunk-wise Access
 -----------------
@@ -104,9 +104,13 @@ Out[6]:
 [63]  SIZE   :         1555200:
 ```
 
+ToDo
+----
+skip scan file structure for uniform structure
 
 
 History
 -------
 2015-11-10    First internal release
+
 
