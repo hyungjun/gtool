@@ -4,13 +4,23 @@ Chunk-wise Access
 -----------------
 ### Read .gt file
 ```python
-In [1]: from cf.io.gtool import gtFile
+In [1]: from gtool import gtopen
 
+In [2]: for i, chunk in enumerate( gtfile ): print '%3i'%i, chunk.data.shape, chunk.header['DATE']
+  0 (1, 2, 360, 720) 20000101 120000
+  1 (1, 2, 360, 720) 20000102 120000
+  2 (1, 2, 360, 720) 20000103 120000
+.
+.
+.
+363 (1, 2, 360, 720) 20001229 120000
+364 (1, 2, 360, 720) 20001230 120000
+365 (1, 2, 360, 720) 20001231 120000
 ```
 
 ### Write .gt file
 ```python
-In [1]: from cf.io.gtool import gtFile
+In [1]: from gtool import gtopen
 
 ```
 
@@ -20,9 +30,9 @@ Variable-wise Access
 ### Read gt file
 
 ```python
-In [1]: from cf.io.gtool import gtFile
+In [1]: from gtool import gtopen
 
-In [2]: gt=gtFile('Wg')
+In [2]: gt=gtopen('Wg')
 
 In [3]: gt.vars
 Out[3]: OrderedDict([('GLW', GLW, (365, 6, 360, 720) : >f4)])
@@ -31,9 +41,9 @@ Out[3]: OrderedDict([('GLW', GLW, (365, 6, 360, 720) : >f4)])
 ### Modify gt file
 
 ```python
-In [1]: from cf2.io.gtool import gtFile
+In [1]: from gtool import gtopen
 
-In [2]: gt=gtFile('./RSTA190101')
+In [2]: gt=gtopen('./RSTA190101')
 
 In [3]: for k,v in gt.vars.items(): v.header['DATE']='19010101 000000 '
 ---------------------------------------------------------------------------
@@ -50,7 +60,7 @@ RuntimeError                              Traceback (most recent call last)
 
 RuntimeError: array is not writeable
 
-In [4]: gt=gtFile('./RSTA190101', 'r+')
+In [4]: gt=gtopen'./RSTA190101', 'r+')
 
 In [5]: for k,v in gt.vars.items(): v.header['DATE']='19010101 000000 '
 
