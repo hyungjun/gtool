@@ -1,12 +1,14 @@
 # gtool io submodule
 
-Installation
-------------
-$ python setup.py install
-
 Dependency
 ----------
 numpy only
+
+Installation
+------------
+```
+$ python setup.py install
+```
 
 Chunk-wise Access
 -----------------
