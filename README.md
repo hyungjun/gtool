@@ -1,11 +1,12 @@
 # gtool io submodule
 
-Dependency
-----------
-numpy only
+
 
 Installation
 ------------
+### Dependency
+numpy only
+
 ```
 $ python setup.py install
 ```
@@ -102,3 +103,10 @@ Out[6]:
 [60]  CSIGN  :MIROC           :  MDATE  :20120116 142510 :  MSIGN  :MIROC           :
 [63]  SIZE   :         1555200:
 ```
+
+
+
+History
+-------
+2015-11-10    First internal release
+
