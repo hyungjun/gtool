@@ -1,5 +1,13 @@
 # gtool io submodule
 
+Installation
+------------
+$ python setup.py install
+
+Dependency
+----------
+numpy only
+
 Chunk-wise Access
 -----------------
 ### Read .gt file
