@@ -16,7 +16,9 @@ Chunk-wise Access
 ```python
 In [1]: from gtool import gtopen
 
-In [2]: for i, chunk in enumerate( gtfile ): print '%3i'%i, chunk.data.shape, chunk.header['DATE']
+In [2]: gtfile=gtopen('runoff')
+
+In [3]: for i, chunk in enumerate( gtfile ): print '%3i'%i, chunk.data.shape, chunk.header['DATE']
   0 (1, 2, 360, 720) 20000101 120000
   1 (1, 2, 360, 720) 20000102 120000
   2 (1, 2, 360, 720) 20000103 120000
