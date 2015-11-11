@@ -13,13 +13,16 @@
 import  os,sys
 from    optparse        import OptionParser
 
-from    gtfile          import gtFile
-from    cf2.GridCoordinates.regrid  import regrid
+from    gtool           import gtopen
+#from    gtfile          import gtFile
+#from    cf2.GridCoordinates.regrid  import regrid
 
 
 def main(args,opts):
     print args
     print opts
+
+    return
 
     srcPath     = args[0]
     outPath     = args[1]
