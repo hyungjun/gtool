@@ -1,5 +1,6 @@
 # gtool io submodule
 
+[![Build Status](https://travis-ci.org/hyungjun/cf.io.gtool.svg?branch=master)](https://travis-ci.org/hyungjun/cf.io.gtool)
 
 
 Installation
