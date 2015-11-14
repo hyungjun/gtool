@@ -16,7 +16,7 @@ from    optparse                    import OptionParser
 
 import  struct
 
-from    numpy                       import memmap, array, concatenate, resize
+from    numpy                       import memmap, array, concatenate, resize, dtype
 
 try:
     from    cf2.utils               import OrderedDict
@@ -226,6 +226,19 @@ class gtFile( __gtHdrFmt__ ):
         '''
 
         if headers == None:
+            native_code = sys.byteorder == 'little' and '<' or '>'
+            byteorder   = Data.dtype.byteorder
+            byteorder   = byteorder if byteorder != '=' else native_code
+
+
+            if byteorder == '<':
+                Data        = Data.byteswap()
+                byteorder   = '>'
+
+            dtypedescr  = byteorder + Data.dtype.kind + str(Data.dtype.itemsize)
+            Data.dtype  = dtypedescr
+
+            Data        = Data.reshape(1,1,180,360)
             dfmt                        = self.dictDFMT[ Data.dtype ]
             aend4, aend3, aend2, aend1  = Data.shape
 

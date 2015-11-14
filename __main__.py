@@ -13,7 +13,8 @@
 import  os,sys
 from    optparse        import OptionParser
 
-from    gtool           import gtopen
+from    numpy           import arange
+from    gtfile          import gtFile   as gtopen
 #from    gtfile          import gtFile
 #from    cf2.GridCoordinates.regrid  import regrid
 
@@ -22,12 +23,29 @@ def main(args,opts):
     print args
     print opts
 
-    return
 
-    srcPath     = args[0]
-    outPath     = args[1]
-#    srcPath     = 'Restart'
-#    outPath     = 'Initial'
+    outPath     = './test.gt'
+
+    aSrc        = arange(10*180*360).reshape(10,1,180,360)
+    aSrc        = aSrc.astype('float32')
+
+    gtOut       = gtopen( outPath, mode='w+' )
+
+    for a in aSrc:
+
+        gtOut.append( a )
+
+    print gtOut.vars
+
+    for a in aSrc:
+        print a.min(), a.max()
+
+    print '='*100
+    for a in gtopen(outPath,'r'):
+        print a.data.min(), a.data.max()
+
+
+    return
 
     nFold       = 2
 
