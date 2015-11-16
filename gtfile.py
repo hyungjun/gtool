@@ -235,6 +235,9 @@ class gtFile( __gtHdrFmt__ ):
 
     def get_chunksize(self, curr):
         if curr in self.__pos__.keys():
+            print '*'*80
+            print curr, self.__pos__[curr]
+            print '*'*80
             return self.__pos__[ curr ]
 
         else:
