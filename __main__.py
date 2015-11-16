@@ -39,7 +39,8 @@ def main(args,opts):
     print gtOut.vars
 
     print '='*100
-    for a in gtopen(outPath,'r',struct='simple'):
+    for a in gtopen(outPath,'r'):
+    #for a in gtopen(outPath,'r',struct='simple'):
         print a.data.min(), a.data.max()
 
     return

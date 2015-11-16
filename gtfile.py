@@ -147,6 +147,8 @@ class gtFile( __gtHdrFmt__ ):
         self.__chunks__ = []
         self.__vars__   = OrderedDict()
 
+        self.__pos__    = OrderedDict()
+
         self.struct     = struct
 
         if struct == 'simple':
@@ -157,7 +159,6 @@ class gtFile( __gtHdrFmt__ ):
         self.iomode     = mode
         self.__version__= __gtConfig__.version
 
-        print self.pos
 
 
     def __getitem__(self, k):
@@ -179,6 +180,7 @@ class gtFile( __gtHdrFmt__ ):
 #            self.__chunks__ = [ chunk for chunk in self ]
 #
 #        return self.__chunks__
+
 
 
     @property
@@ -203,6 +205,7 @@ class gtFile( __gtHdrFmt__ ):
                 pos += chunkSize
 
         return self.__pos__
+
 
 
     @property
