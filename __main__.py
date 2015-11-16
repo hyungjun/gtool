@@ -13,39 +13,66 @@
 import  os,sys
 from    optparse        import OptionParser
 
-from    numpy           import arange
+from    numpy           import array, arange
 from    gtfile          import gtFile   as gtopen
-#from    gtfile          import gtFile
 #from    cf2.GridCoordinates.regrid  import regrid
 
 
 def main(args,opts):
-    print args
-    print opts
 
+    testFlag    = True      # flag for the entire test seq.
 
     outPath     = './test.gt'
 
     aSrc        = arange(10*180*360).reshape(10,1,180,360)
     aSrc        = aSrc.astype('float32')
 
+    print
+    print 'testing cf.io.gtool...'
+    print
+
     gtOut       = gtopen( outPath, mode='w+' )
+
+    print '='*80
+    print '\t## encoding (version: %s) ###'%gtOut.__version__
+    print '\t   source array:', aSrc.shape, aSrc.dtype, 'Min:%s'%aSrc.min(), 'Max:%s'%aSrc.max()
+    print
 
     for a in aSrc:
 
-        print a.shape, a.min(), a.max()
+        print '\t\tappend:', a.shape, a.min(), a.max()
         gtOut.append( a )
 
-    print gtOut.vars
+    print
+    print '\t   out path: %s'%outPath, gtOut.vars
 
-    return
-    print '='*100
-    for a in gtopen(outPath,'r'):
-    #for a in gtopen(outPath,'r',struct='simple'):
-        print a.data.min(), a.data.max()
+    print '='*80
 
-    return
+    gtSrc       = gtopen( outPath, 'r' )
+    print '\t## decoding (version: %s) ###'%gtSrc.__version__
+    print '\t   source file:', outPath
+    print
 
+    Data    = []
+    for chunk in gtSrc:
+
+        data    = chunk.data
+        print '\t\tget a chunk:', data.shape, data.min(), data.max(), data.dtype
+
+        Data.extend( data )
+
+
+    chkFlag     = all(array(Data).flatten() == aSrc.flatten())
+    print
+    print '\t   identical to aSrc?', chkFlag, array(Data).shape
+
+    testFlag    = testFlag & chkFlag
+
+    print '='*80
+
+    return testFlag
+
+    '''
     nFold       = 2
 
     gtSrc       = gtFile( srcPath, 'r' )
@@ -67,6 +94,7 @@ def main(args,opts):
         gtOut.append(aOut, gt.header.template( **d ))
 
         print gt.header['ITEM'], gt.data.shape, gt.data.dtype, aOut.shape, aOut.dtype
+    '''
 
 
 if __name__=='__main__':

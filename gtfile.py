@@ -278,7 +278,6 @@ class gtFile( __gtHdrFmt__ ):
         headers : <type>    in [ __gtHdr__, iterable, ]??,
         '''
 
-        print '###DATA', Data.shape,
         if headers == None:
             native_code = sys.byteorder == 'little' and '<' or '>'
             byteorder   = Data.dtype.byteorder
@@ -292,8 +291,6 @@ class gtFile( __gtHdrFmt__ ):
             dtypedescr  = byteorder + Data.dtype.kind + str(Data.dtype.itemsize)
             Data.dtype  = dtypedescr
 
-            print Data.shape,
-            print dtypedescr
             Data        = Data.reshape(1,1,180,360)
             dfmt        = self.dictDFMT[ Data.dtype ]
 
@@ -311,8 +308,6 @@ class gtFile( __gtHdrFmt__ ):
 
 
         for data, header in map(None, Data, headers):
-
-            print 'in loop:', data.shape, data.size, header, len(header)
 
             chunk       = __gtChunk__( data, header=header )
             self.__chunks__.append( chunk )
@@ -338,9 +333,6 @@ class gtFile( __gtHdrFmt__ ):
             # in case using 'concatenate' need to add write routine
             '''
             # ------------------------------------------------------------------
-            print '***', self.__rawArray__.size, chunk.size, __memmap__.shape
-
-
 
 
 class __gtDim__(gtFile):

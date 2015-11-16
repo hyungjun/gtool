@@ -43,12 +43,9 @@ class __gtChunk__( __gtConfig__ ):
             __rawArray__    = args[0]
             header          = kwargs['header']
 
-            print "chunking", __rawArray__.size,
             __rawArray__    = self.chunking( __rawArray__, header )
             pos             = 0
             size            = __rawArray__.size
-
-            print size
 
         else:
             # decoding mode
@@ -77,8 +74,6 @@ class __gtChunk__( __gtConfig__ ):
 
         data.dtype  = 'S1'
         chksumData  = list( struct.pack( '>i4', data.size ) )
-
-        print '...in chunking:', chksumHdr, chksumData, data.shape, data.size, len(header)
 
         chunk       = concatenate( [ chksumHdr, header, chksumHdr,
                                      chksumData, data.flatten(), chksumData ] )
@@ -118,9 +113,6 @@ class __gtChunk__( __gtConfig__ ):
                        'UR4':dtype('>f4'),
                        'UR8':dtype('>f8')}[ self.header['DFMT'].strip() ]
 
-        print self.pos, self.size, self.hsize
-        print sIdx, eIdx, eIdx-sIdx
-        print data.shape, shape
         data.shape  = shape
 
         return data
