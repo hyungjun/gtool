@@ -312,7 +312,7 @@ class gtFile( __gtHdrFmt__ ):
 
         for data, header in map(None, Data, headers):
 
-            print 'in loop:', data.shape, data.size
+            print 'in loop:', data.shape, data.size, header, len(header)
 
             chunk       = __gtChunk__( data, header=header )
             self.__chunks__.append( chunk )
