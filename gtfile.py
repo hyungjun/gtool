@@ -157,6 +157,8 @@ class gtFile( __gtHdrFmt__ ):
         self.iomode     = mode
         self.__version__= __gtConfig__.version
 
+        print self.pos
+
 
     def __getitem__(self, k):
         return self.__chunks__[k]
