@@ -38,6 +38,7 @@ def main(args,opts):
 
     print gtOut.vars
 
+    return
     print '='*100
     for a in gtopen(outPath,'r'):
     #for a in gtopen(outPath,'r',struct='simple'):

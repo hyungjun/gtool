@@ -211,7 +211,6 @@ class gtFile( __gtHdrFmt__ ):
     @property
     def vars(self):
 
-        s=time.time()
         if len( self.__vars__.keys() ) == 0 or not hasattr( self, '__vars__' ):
 
             self.__vars__   = OrderedDict()
@@ -227,6 +226,10 @@ class gtFile( __gtHdrFmt__ ):
 
                 self.__vars__[varName].append( chunk )
 
+        print '///'*10
+        for k,v in self.__vars__.items():
+            print k, v[0].data.shape
+        print '///'*10
         return OrderedDict( [(k, __gtVar__(v) ) for k,v in self.__vars__.items()] )
 
 
