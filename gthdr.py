@@ -41,7 +41,7 @@ class __gtHdrFmt__(object):
 ("AEND1",[int,"%16i",0]),       ("AITM2",[str,"%-16s",'']),     ("ASTR2",[int,"%16i",1]),       #30
 ("AEND2",[int,"%16i",0]),       ("AITM3",[str,"%-16s",'']),     ("ASTR3",[int,"%16i",1]),       #33
 ("AEND3",[int,"%16i",0]),       ("DFMT",[str,"%-16s",'UR4']),   ("MISS",[float,"%16.7e",-999.]),#36
-("DMIN",[float,"%16.7e",-999.]),("DMAX",[float,"%16.7e",-999.]),("DIVL",[float,"%16.7e",-999.]),#39
+("DMIN",[float,"%16.7e",-999.]),("DMAX",[float,"%16.7e",-999.]),("DIVS",[float,"%16.7e",-999.]),#39
 ("DIVL",[float,"%16.7e",-999.]),("STYP",[int,"%16i",1]),        ("COPTN",[str,"%-16s",'']),     #42
 ("IOPTN",[int,"%16i",0]),       ("ROPTN",[float,"%16.7e",0.]),  ("DATE1",[str,"%-16s",'']),     #45
 ("DATE2",[str,"%-16s",'']),     ("MEMO1",[str,"%-16s",'']),     ("MEMO2",[str,"%-16s",'']),     #48
