@@ -78,6 +78,8 @@ class __gtChunk__( __gtConfig__ ):
         data.dtype  = 'S1'
         chksumData  = list( struct.pack( '>i4', data.size ) )
 
+        print '...in chunking:', chksumHdr, chksumData, data.shape, data.size, len(header)
+
         chunk       = concatenate( [ chksumHdr, header, chksumHdr,
                                      chksumData, data.flatten(), chksumData ] )
 
