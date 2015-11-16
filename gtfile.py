@@ -278,7 +278,7 @@ class gtFile( __gtHdrFmt__ ):
         headers : <type>    in [ __gtHdr__, iterable, ]??,
         '''
 
-        '###DATA', Data.shape,
+        print '###DATA', Data.shape,
         if headers == None:
             native_code = sys.byteorder == 'little' and '<' or '>'
             byteorder   = Data.dtype.byteorder
