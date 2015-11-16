@@ -278,6 +278,7 @@ class gtFile( __gtHdrFmt__ ):
         headers : <type>    in [ __gtHdr__, iterable, ]??,
         '''
 
+        '###DATA', Data.shape,
         if headers == None:
             native_code = sys.byteorder == 'little' and '<' or '>'
             byteorder   = Data.dtype.byteorder
@@ -291,8 +292,11 @@ class gtFile( __gtHdrFmt__ ):
             dtypedescr  = byteorder + Data.dtype.kind + str(Data.dtype.itemsize)
             Data.dtype  = dtypedescr
 
+            print Data.shape,
+            print dtypedescr
             Data        = Data.reshape(1,1,180,360)
-            dfmt                        = self.dictDFMT[ Data.dtype ]
+            dfmt        = self.dictDFMT[ Data.dtype ]
+
             aend4, aend3, aend2, aend1  = Data.shape
 
             kwargs[ 'AEND1' ]   = aend1,
