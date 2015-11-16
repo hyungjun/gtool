@@ -33,12 +33,10 @@ def main(args,opts):
 
     for a in aSrc:
 
+        print a.shape, a.min(), a.max()
         gtOut.append( a )
 
     print gtOut.vars
-
-    for a in aSrc:
-        print a.min(), a.max()
 
     print '='*100
     for a in gtopen(outPath,'r',struct='simple'):
