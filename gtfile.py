@@ -246,6 +246,13 @@ class gtFile( __gtHdrFmt__ ):
 
             chunkSize       = self.hdrBytes + dataSize
 
+            print '*'*80
+            print dataPos
+            print self.hdrBytes
+            print dataSize
+            print chunkSize
+            print '*'*80
+
             self.__pos__[self.curr] = self.curr+chunkSize
 
             return chunkSize
