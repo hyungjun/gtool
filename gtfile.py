@@ -226,18 +226,11 @@ class gtFile( __gtHdrFmt__ ):
 
                 self.__vars__[varName].append( chunk )
 
-        print '///'*10
-        for k,v in self.__vars__.items():
-            print k, v[0].data.shape
-        print '///'*10
         return OrderedDict( [(k, __gtVar__(v) ) for k,v in self.__vars__.items()] )
 
 
     def get_chunksize(self, curr):
         if curr in self.__pos__.keys():
-            print '*'*80
-            print curr, self.__pos__[curr]
-            print '*'*80
             return self.__pos__[ curr ]
 
         else:
@@ -248,13 +241,6 @@ class gtFile( __gtHdrFmt__ ):
             dataSize        = 4+dataSize[0]+4
 
             chunkSize       = self.hdrBytes + dataSize
-
-            print '*'*80
-            print dataPos
-            print self.hdrBytes
-            print dataSize
-            print chunkSize
-            print '*'*80
 
             self.__pos__[self.curr] = self.curr+chunkSize
 
@@ -271,12 +257,11 @@ class gtFile( __gtHdrFmt__ ):
             self.curr   = 0
             raise StopIteration
 
-        chunkSize       = self.get_chunksize( self.curr )
+        chunkSize   = self.get_chunksize( self.curr )
 #        rawArray        = self.__rawArray__[ self.curr: self.curr+chunkSize ]
 #        chunk           = __gtChunk__( rawArray )
 
-        print '###',self.curr, chunkSize
-        chunk           = __gtChunk__( self.__rawArray__, self.curr, chunkSize )
+        chunk       = __gtChunk__( self.__rawArray__, self.curr, chunkSize )
 
         self.curr += chunkSize
 
@@ -347,6 +332,8 @@ class gtFile( __gtHdrFmt__ ):
             # in case using 'concatenate' need to add write routine
             '''
             # ------------------------------------------------------------------
+            print '***', self.__rawArray__.size, chunk.size, __memmap__.shape
+
 
 
 
