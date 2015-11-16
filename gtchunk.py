@@ -113,6 +113,8 @@ class __gtChunk__( __gtConfig__ ):
                        'UR4':dtype('>f4'),
                        'UR8':dtype('>f8')}[ self.header['DFMT'].strip() ]
 
+        print self.pos, self.size, self.hsize
+        print sIdx, eIdx, eIdx-sIdx
         print data.shape, shape
         data.shape  = shape
 
