@@ -25,25 +25,37 @@ from    gtcfg           import __gtConfig__
 
 class __gtChunk__( __gtConfig__ ):
 
-    def __init__(self,  __rawArray__, header=None):
-    #def __init__(self, sIdx, chunkSize, __rawArray__):
+    def __init__(self, *args, **kwargs):
+    #def __init__(self,  __rawArray__, header=None):
         '''
-        __rawArray__    i)  memmap array with header    /* decodeing mode */
-                        ii) numpy array without header  /* encoding mode */
+        /* decodeing mode */
+        args    = [ __rawArray__, self.curr, chunkSize ]    # __rawArray__: entire gtool file
+        kwargs  = {}
 
-        header          is requried for in case of ii)
+        /* encoding mode */
+        args    = [ __rawArray__ ]                          # __rawArray__: appended/extended chunk
+        kwargs  = {'header': ... }
         '''
 
-        if header != None:
+        if 'header' in kwargs:
+            # encoding mode
+
+            __rawArray__    = args[0]
+            header          = kwargs['header']
+
             __rawArray__    = self.chunking( __rawArray__, header )
+            pos             = 0
+            size            = __rawArray__.size
 
-        #self.pos    = sIdx
-        self.hsize  = self.hdrsize
-        self.size   = __rawArray__.size
+        else:
+            # decoding mode
+            __rawArray__, pos, size = args
+
         self.__rawArray__   = __rawArray__
+        self.pos            = pos
+        self.size           = size
 
-        #print 'CHUNK', hdrSize, dataSize, __rawArray__.size
-
+        self.hsize          = self.hdrsize
 
 
     '''
@@ -72,8 +84,12 @@ class __gtChunk__( __gtConfig__ ):
 
     @property
     def header(self):
-        __header__      = self.__rawArray__[4:self.hsize-4]
-        #__header__      = self.__rawArray__[ self.pos:self.pos+self.hsize][4:-4]
+
+        sIdx    = self.pos + 4
+        eIdx    = self.pos + self.hsize - 4
+
+        __header__      = self.__rawArray__[sIdx:eIdx]
+
         __header__.dtype= 'S16'
 
         return __gtHdr__( [__header__] )
@@ -81,9 +97,10 @@ class __gtChunk__( __gtConfig__ ):
 
     @property
     def data(self):
-        data    = self.__rawArray__[4+self.hsize:-4]
-        #data    = self.__rawArray__[ self.pos:self.pos+self.size: ][4+self.hsize:-4]
 
+        sIdx    = self.pos + self.hsize + 4
+        eIdx    = self.pos + self.size - 4
+        data    = self.__rawArray__[sIdx:eIdx]
 
         # NEED to consider ASTR1 :: e.g.) self.header['AEND3'] - self.header['ASTR3'] +1
         shape       = map( int, [1,

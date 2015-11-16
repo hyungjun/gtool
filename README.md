@@ -105,9 +105,18 @@ Out[6]:
 [63]  SIZE   :         1555200:
 ```
 
+
+Features
+--------
+read/write float32 and float64
+
+
 ToDo
 ----
-skip scan file structure for uniform structure
+delayed evaluation
+support float16
+support mask
+add utils such as gtshow
 
 
 History

@@ -10,11 +10,12 @@
 #------------------------------------------------------cf0.2@20120401
 
 
+import time
 import  os,sys
 from    optparse                    import OptionParser
 
 
-import  struct
+#import  struct
 
 from    numpy                       import memmap, array, concatenate, resize, dtype
 
@@ -117,8 +118,11 @@ class gtFile( __gtHdrFmt__ ):
     64 "SIZE":[int,"%16i",0]
     '''
 
-    def __init__(self, gtPath, mode='r'):
+    def __init__(self, gtPath, mode='r', struct='native'):
         '''
+        struct  : ['simple', 'native']
+                   'simple' : uniform file structure (singel var)
+                   'native' : contains multiple vars & dims
         '''
 
         if mode in ['r','c','r+']:
@@ -142,6 +146,13 @@ class gtFile( __gtHdrFmt__ ):
 
         self.__chunks__ = []
         self.__vars__   = OrderedDict()
+
+        self.struct     = struct
+
+        if struct == 'simple':
+            # cache varName for simple structure
+            size            = self.pos[0]
+            self.varName    = __gtChunk__( self.__rawArray__, 0, size ).header['ITEM'].strip()
 
         self.iomode     = mode
         self.__version__= __gtConfig__.version
@@ -169,15 +180,42 @@ class gtFile( __gtHdrFmt__ ):
 
 
     @property
+    def pos(self):
+
+        if hasattr( self, '__pos__' ):
+            return self.__pos__
+
+        else:
+            self.__pos__    = OrderedDict()
+
+            pos             = 0
+            defaultSize     = self.get_chunksize( 0 )
+
+            while pos < self.size:
+
+                chunkSize   = self.get_chunksize( pos ) if self.struct == 'native'  \
+                     else defaultSize
+
+                self.__pos__[ pos ] = chunkSize
+
+                pos += chunkSize
+
+        return self.__pos__
+
+
+    @property
     def vars(self):
 
+        s=time.time()
         if len( self.__vars__.keys() ) == 0 or not hasattr( self, '__vars__' ):
 
             self.__vars__   = OrderedDict()
 
             for chunk in self:#.__chunks__:
 
-                varName     = chunk.header['ITEM'].strip()
+                # speed-up for 'simple' structure
+                varName     = chunk.header['ITEM'].strip() if not hasattr( self, 'varName' )    \
+                         else self.varName
 
                 if not varName in self.__vars__:
                     self.__vars__[varName] = []
@@ -185,6 +223,24 @@ class gtFile( __gtHdrFmt__ ):
                 self.__vars__[varName].append( chunk )
 
         return OrderedDict( [(k, __gtVar__(v) ) for k,v in self.__vars__.items()] )
+
+
+    def get_chunksize(self, curr):
+        if curr in self.__pos__.keys():
+            return self.__pos__[ curr ]
+
+        else:
+            dataPos         = curr + self.hdrBytes
+
+            dataSize        = self.__rawArray__[dataPos: dataPos+4]
+            dataSize.dtype  = '>i4'
+            dataSize        = 4+dataSize[0]+4
+
+            chunkSize       = self.hdrBytes + dataSize
+
+            self.__pos__[self.curr] = self.curr+chunkSize
+
+            return chunkSize
 
 
     def __iter__(self):
@@ -197,26 +253,19 @@ class gtFile( __gtHdrFmt__ ):
             self.curr   = 0
             raise StopIteration
 
-        dataPos         = self.curr + self.hdrBytes
+        chunkSize       = self.get_chunksize( self.curr )
+#        rawArray        = self.__rawArray__[ self.curr: self.curr+chunkSize ]
+#        chunk           = __gtChunk__( rawArray )
 
-        dataSize        = self.__rawArray__[dataPos: dataPos+4]
-        dataSize.dtype  = '>i4'
-        dataSize        = 4+dataSize[0]+4
+        chunk           = __gtChunk__( self.__rawArray__, self.curr, chunkSize )
 
-        chunkSize       = self.hdrBytes + dataSize
-
-        rawArray        = self.__rawArray__[ self.curr: self.curr+chunkSize ]
-        chunk           = __gtChunk__( rawArray )
-
-        '''
-        chunk           = __gtChunk__( self.curr,
-                                       #self.hdrBytes,
-                                       chunkSize,
-                                       self.__rawArray__ )
-        '''
         self.curr += chunkSize
 
         return chunk
+
+
+    def extend(self):
+        return
 
 
     def append(self, Data, headers=None, **kwargs):
@@ -255,12 +304,14 @@ class gtFile( __gtHdrFmt__ ):
 
         for data, header in map(None, Data, headers):
 
-            chunk       = __gtChunk__( data, header )
+            chunk       = __gtChunk__( data, header=header )
             self.__chunks__.append( chunk )
 
             varName     = header[2].strip()
 
-            if not varName in self.__vars__:    self.__vars__[varName] = []
+            if not varName in self.__vars__:
+                self.__vars__[varName] = []
+
             self.__vars__[varName].append( chunk )
 
             # write to memmap --------------------------------------------------
