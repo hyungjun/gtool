@@ -43,9 +43,12 @@ class __gtChunk__( __gtConfig__ ):
             __rawArray__    = args[0]
             header          = kwargs['header']
 
+            print "chunking", __rawArray__.size,
             __rawArray__    = self.chunking( __rawArray__, header )
             pos             = 0
             size            = __rawArray__.size
+
+            print size
 
         else:
             # decoding mode
