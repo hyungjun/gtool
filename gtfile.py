@@ -262,6 +262,7 @@ class gtFile( __gtHdrFmt__ ):
 #        rawArray        = self.__rawArray__[ self.curr: self.curr+chunkSize ]
 #        chunk           = __gtChunk__( rawArray )
 
+        print '###',self.curr, chunkSize
         chunk           = __gtChunk__( self.__rawArray__, self.curr, chunkSize )
 
         self.curr += chunkSize
