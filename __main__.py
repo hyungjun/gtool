@@ -62,20 +62,69 @@ def test_chunkwise_decoding( srcPath, aSrc ):
 
 
 def test_modification( srcPath ):
-    gtSrc       = gtopen( srcPath, 'r+', struct='simple' )
+    gtSrc       = gtopen( srcPath, 'r+' )#, struct='simple' )
+    gtVar       = gtSrc.vars['']
+
     print '\t## modification (version: %s) ###'%gtSrc.__version__
     print '\t   source file:', srcPath
     print
-    gtSrc.vars[''].header['ITEM']='test'
-    print gtSrc.vars[''].header
 
-    return
+    print '\t origial header'
+    print gtVar.header
 
+    varName     = 'test'
+    gtVar.header['ITEM']    = varName
+    print '\t   set "ITEM" as "test"'
+
+    sDTime      = datetime.datetime(2000,1,1)
+    delT        = datetime.timedelta(days=1)
+    DTime       = [sDTime+delT*i for i in range( gtVar.shape[0] ) ]
+    TStamp      = [dtime.strftime('%Y%m%d %H%M%S ') for dtime in DTime ]
+    gtVar.header['DATE']    = TStamp
+    print '\t   set "DATE" as %s - %s'%(TStamp[0], TStamp[-1])
+
+    print gtVar.header
+    print '='*80
+
+    chkFlag     = ( gtVar.header['DATE'] == tuple(TStamp) )     \
+                 &( varName == gtVar.header['ITEM'].strip() )
+
+    return chkFlag
+
+
+def test_varwise_decoding( srcPath, aOri ):
+
+    gtSrc       = gtopen( srcPath, 'r', struct='simple' )
+    gtVar       = gtSrc.vars['test']
+
+    print '\t## variable-wise decoding (version: %s) ###'%gtSrc.__version__
+    print '\t   source file:', srcPath
+    print
+
+    print '\t   variables in gt file:', gtSrc.vars
+    print '\t   "test" variable     :', gtVar
+    print '\t   header of "test" var:', gtVar.header
+
+    aSrc       = gtVar[:]
+
+    for a in aSrc:
+
+        print '\t\titer aSrc:', a.shape, a.min(), a.max()
+
+    print '='*80
+
+    chkFlag     = all(aSrc.flatten() == aOri.flatten())
+
+    print
+    print '\t   identical to aOri?', chkFlag, aSrc.shape
+    print '='*80
+
+    return chkFlag
 
 
 def main(args,opts):
 
-    testFlag    = True      # flag for the entire test seq.
+    testFlag    = []        # flag for the entire test seq.
 
     outPath     = './test.gt'
 
@@ -87,12 +136,14 @@ def main(args,opts):
     aSrc        = aSrc.astype('float32')
     print '='*80
 
-    testFlag    &= test_chunkwise_encoding( aSrc, outPath )
-    testFlag    &= test_chunkwise_decoding( outPath, aSrc )
+    testFlag.append( test_chunkwise_encoding( aSrc, outPath ))
+    testFlag.append( test_chunkwise_decoding( outPath, aSrc ))
+    testFlag.append( test_modification( outPath )            )
+    testFlag.append( test_varwise_decoding( outPath, aSrc )  )
 
-    test_modification( outPath )
+    print testFlag
 
-    return testFlag
+    return all( testFlag )
 
     '''
     nFold       = 2

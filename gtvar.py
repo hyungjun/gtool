@@ -42,17 +42,19 @@ class __gtVar__( object ):
         # assign to aOut -------------------------------------------------------
         chunks  = self.chunks[Slice[0]]
 
-        outShp  = list( chunks[0].data[0][ Slice[1:] ].shape )
+        outShp  = list( chunks[0].data[ Slice[1:] ].shape )
 
         if type( Slice[0] ) == slice:
             outShp  = [ len(chunks) ] + outShp
 
             aOut    = empty( outShp, self.dtype )
-            for i,c in enumerate(chunks):   aOut[i] = c.data[0][ Slice[1:] ]
+
+            for i,c in enumerate(chunks):
+                aOut[i] = c.data[ Slice[1:] ]
 
         else:
             aOut    = empty( outShp, self.dtype )
-            aOut[:] = chunks[0].data[0][ Slice[1:] ]
+            aOut[:] = chunks[0].data[ Slice[1:] ]
 
         #aOut    = array([ c.data[ Slice[1:] ] for c in self.chunks[Slice[0]] ])
         # ----------------------------------------------------------------------
