@@ -122,5 +122,6 @@ add utils such as gtshow
 History
 -------
 2015-11-10    First internal release
+2015-11-17    version 0.55 /* delayed evaluation, debug many */
 
 
