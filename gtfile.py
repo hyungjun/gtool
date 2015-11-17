@@ -131,7 +131,6 @@ class gtFile( __gtHdrFmt__ ):
         elif mode == 'w+':
             gtFile  = open(gtPath, 'w')
             gtFile.close()
-            #self.__rawArray__   = memmap(gtPath, 'S1', 'r+')
 
             self.__rawArray__   = array([], 'S1')
             self.gtPath         = gtPath
@@ -162,7 +161,6 @@ class gtFile( __gtHdrFmt__ ):
 
         self.iomode     = mode
         self.__version__= __gtConfig__.version
-
 
 
     def __getitem__(self, k):
@@ -315,13 +313,13 @@ class gtFile( __gtHdrFmt__ ):
 
             # write to memmap --------------------------------------------------
             pos         = self.__rawArray__.size
-            #size        = 4+len(header)+4 + 4+data.size+4
-
             __memmap__          = memmap( self.gtPath, 'S1', 'r+',
                                           shape=(self.__rawArray__.size+chunk.size)
                                         )
             __memmap__[pos:]    = chunk.__rawArray__
             self.__rawArray__   = __memmap__
+            self.__rawArray__[pos:]     = chunk.__rawArray__
+
             '''
             self.__rawArray__   = concatenate( [self.__rawArray__, chunk] )
             # in case using 'concatenate' need to add write routine
