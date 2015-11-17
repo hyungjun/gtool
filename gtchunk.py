@@ -103,7 +103,7 @@ class __gtChunk__( __gtConfig__ ):
         data    = self.__rawArray__[sIdx:eIdx]
 
         # NEED to consider ASTR1 :: e.g.) self.header['AEND3'] - self.header['ASTR3'] +1
-        shape       = map( int, [1,
+        shape       = map( int, [
                                  self.header['AEND3'],
                                  self.header['AEND2'],
                                  self.header['AEND1']] )

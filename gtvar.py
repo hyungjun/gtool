@@ -25,7 +25,7 @@ class __gtVar__( object ):
         self.chunks     = array( chunks )
 
         self.item       = chunks[0].header['ITEM'].strip()
-        self.shape      = [len(chunks)] + list(self.chunks[0].data.shape[1:])
+        self.shape      = [len(chunks)] + list(self.chunks[0].data.shape)
         self.shape      = tuple( self.shape )
         self.size       = reduce( lambda x,y: x*y, self.shape )
         self.dtype      = chunks[0].data.dtype

@@ -10,7 +10,7 @@
 #------------------------------------------------------cf0.2@20120401
 
 
-import  os,sys
+import  os,sys,datetime
 from    optparse        import OptionParser
 
 from    numpy           import array, arange
@@ -18,22 +18,9 @@ from    gtfile          import gtFile   as gtopen
 #from    cf2.GridCoordinates.regrid  import regrid
 
 
-def main(args,opts):
-
-    testFlag    = True      # flag for the entire test seq.
-
-    outPath     = './test.gt'
-
-    aSrc        = arange(10*180*360).reshape(10,1,180,360)
-    aSrc        = aSrc.astype('float32')
-
-    print
-    print 'testing cf.io.gtool...'
-    print
-
+def test_chunkwise_encoding( aSrc, outPath ):
     gtOut       = gtopen( outPath, mode='w+' )
 
-    print '='*80
     print '\t## encoding (version: %s) ###'%gtOut.__version__
     print '\t   source array:', aSrc.shape, aSrc.dtype, 'Min:%s'%aSrc.min(), 'Max:%s'%aSrc.max()
     print
@@ -45,12 +32,15 @@ def main(args,opts):
 
     print
     print '\t   out path: %s'%outPath, gtOut.vars
-
     print '='*80
 
-    gtSrc       = gtopen( outPath, 'r' )
+    return True
+
+
+def test_chunkwise_decoding( srcPath, aSrc ):
+    gtSrc       = gtopen( srcPath, 'r' )
     print '\t## decoding (version: %s) ###'%gtSrc.__version__
-    print '\t   source file:', outPath
+    print '\t   source file:', srcPath
     print
 
     Data    = []
@@ -59,16 +49,48 @@ def main(args,opts):
         data    = chunk.data
         print '\t\tget a chunk:', data.shape, data.min(), data.max(), data.dtype
 
-        Data.extend( data )
+        Data.append( data )
 
+    Data    = array( Data )
+    chkFlag     = all(Data.flatten() == aSrc.flatten())
 
-    chkFlag     = all(array(Data).flatten() == aSrc.flatten())
     print
-    print '\t   identical to aSrc?', chkFlag, array(Data).shape
-
-    testFlag    = testFlag & chkFlag
-
+    print '\t   identical to aSrc?', chkFlag, Data.shape
     print '='*80
+
+    return chkFlag
+
+
+def test_modification( srcPath ):
+    gtSrc       = gtopen( srcPath, 'r+', struct='simple' )
+    print '\t## modification (version: %s) ###'%gtSrc.__version__
+    print '\t   source file:', srcPath
+    print
+    gtSrc.vars[''].header['ITEM']='test'
+    print gtSrc.vars[''].header
+
+    return
+
+
+
+def main(args,opts):
+
+    testFlag    = True      # flag for the entire test seq.
+
+    outPath     = './test.gt'
+
+    print
+    print 'testing cf.io.gtool...'
+    print
+
+    aSrc        = arange(10*180*360).reshape(10,1,180,360)
+    aSrc        = aSrc.astype('float32')
+    print '='*80
+
+    testFlag    &= test_chunkwise_encoding( aSrc, outPath )
+    testFlag    &= test_chunkwise_decoding( outPath, aSrc )
+
+    test_modification( outPath )
 
     return testFlag
 
@@ -95,6 +117,7 @@ def main(args,opts):
 
         print gt.header['ITEM'], gt.data.shape, gt.data.dtype, aOut.shape, aOut.dtype
     '''
+
 
 
 if __name__=='__main__':

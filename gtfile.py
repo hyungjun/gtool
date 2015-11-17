@@ -153,8 +153,12 @@ class gtFile( __gtHdrFmt__ ):
 
         if struct == 'simple':
             # cache varName for simple structure
-            size            = self.pos[0]
+
+            self.set_uniform_pos()
+
+            size            = self.__pos__[0]
             self.varName    = __gtChunk__( self.__rawArray__, 0, size ).header['ITEM'].strip()
+
 
         self.iomode     = mode
         self.__version__= __gtConfig__.version
@@ -182,29 +186,18 @@ class gtFile( __gtHdrFmt__ ):
 #        return self.__chunks__
 
 
+    def set_uniform_pos(self):
 
-    @property
-    def pos(self):
+        pos             = 0
+        defaultSize     = self.get_chunksize( 0 )
 
-        if hasattr( self, '__pos__' ):
-            return self.__pos__
+        while pos < self.size:
 
-        else:
-            self.__pos__    = OrderedDict()
+            self.__pos__[ pos ] = defaultSize
 
-            pos             = 0
-            defaultSize     = self.get_chunksize( 0 )
+            pos += defaultSize
 
-            while pos < self.size:
-
-                chunkSize   = self.get_chunksize( pos ) if self.struct == 'native'  \
-                     else defaultSize
-
-                self.__pos__[ pos ] = chunkSize
-
-                pos += chunkSize
-
-        return self.__pos__
+        return
 
 
 
@@ -258,8 +251,6 @@ class gtFile( __gtHdrFmt__ ):
             raise StopIteration
 
         chunkSize   = self.get_chunksize( self.curr )
-#        rawArray        = self.__rawArray__[ self.curr: self.curr+chunkSize ]
-#        chunk           = __gtChunk__( rawArray )
 
         chunk       = __gtChunk__( self.__rawArray__, self.curr, chunkSize )
 
@@ -269,12 +260,16 @@ class gtFile( __gtHdrFmt__ ):
 
 
     def extend(self):
+        '''
+        Data    : nd-array in rank-4 (T, Z, Y, X)
+        headers : <type>    in [ __gtHdr__, iterable, ]??,
+        '''
         return
 
 
     def append(self, Data, headers=None, **kwargs):
         '''
-        Data    : nd-array in rank-4 (T, Z, Y, X)
+        Data    : nd-array in rank-3 (Z, Y, X)
         headers : <type>    in [ __gtHdr__, iterable, ]??,
         '''
 
@@ -291,10 +286,9 @@ class gtFile( __gtHdrFmt__ ):
             dtypedescr  = byteorder + Data.dtype.kind + str(Data.dtype.itemsize)
             Data.dtype  = dtypedescr
 
-            Data        = Data.reshape(1,1,180,360)
             dfmt        = self.dictDFMT[ Data.dtype ]
 
-            aend4, aend3, aend2, aend1  = Data.shape
+            aend3, aend2, aend1  = Data.shape
 
             kwargs[ 'AEND1' ]   = aend1,
             kwargs[ 'AEND2' ]   = aend2,
