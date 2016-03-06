@@ -318,7 +318,7 @@ class gtFile( __gtHdrFmt__ ):
                                         )
             __memmap__[pos:]    = chunk.__rawArray__
             self.__rawArray__   = __memmap__
-            self.__rawArray__[pos:]     = chunk.__rawArray__
+#            self.__rawArray__[pos:]     = chunk.__rawArray__
 
             '''
             self.__rawArray__   = concatenate( [self.__rawArray__, chunk] )

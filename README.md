@@ -1,5 +1,5 @@
 # gtool io submodule
-
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.47072.svg)](http://dx.doi.org/10.5281/zenodo.47072)
 [![Build Status](https://travis-ci.org/hyungjun/cf.io.gtool.svg?branch=master)](https://travis-ci.org/hyungjun/cf.io.gtool)
 
 
