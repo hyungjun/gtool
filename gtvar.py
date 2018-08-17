@@ -16,9 +16,11 @@ from    optparse        import OptionParser
 from    numpy           import arange, array, empty
 
 from    gthdr           import __gtHdr__
+from    gtdim           import __gtDim__
+from    export2nc       import Export2NC
 
 
-class __gtVar__( object ):
+class __gtVar__( Export2NC ):
 
     def __init__(self, chunks ):
 
@@ -82,7 +84,7 @@ class __gtVar__( object ):
         if not hasattr(k, '__iter__'):  k = [k]
 
         if len(k) > len(self.shape):# and not Ellipsis in k:
-            raise KeyError, 'shape %s does not match with slice %s'%(self.shape, k)
+            raise KeyError( 'shape %s does not match with slice %s'%(self.shape, k) )
 
         Slice   = []
 
@@ -111,14 +113,26 @@ class __gtVar__( object ):
 
 
     @property
+    def dims(self):
+
+        dimensions  = ( self.header['AITM1'], self.header['AITM2'], self.header['AITM3'] )
+
+        dimensions  = [ 'UNDEF%s'%self.header['AEND%i'%(i+1)].strip() if dim.strip() == '' else dim 
+                                for i, dim in enumerate( dimensions ) ]
+
+
+        return __gtDim__( dimensions )
+
+
+    @property
     def data(self):
         return self.__getitem__
 
 
 
 def main(args,opts):
-    print args
-    print opts
+    print( args )
+    print( opts )
 
     return
 

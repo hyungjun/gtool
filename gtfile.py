@@ -136,7 +136,7 @@ class gtFile( __gtHdrFmt__ ):
             self.gtPath         = gtPath
 
         else:
-            raise ValueError, '%s is not supported option'%mode
+            raise ValueError( '%s is not supported option'%mode )
 
 
         self.curr       = 0
@@ -327,64 +327,10 @@ class gtFile( __gtHdrFmt__ ):
             # ------------------------------------------------------------------
 
 
-class __gtDim__(gtFile):
-    '''
-    TODO
-    i. to be integrated into class __gtHdr__
-    ii. fix a bug for reading wrong value
-    '''
-
-    def __init__(self,crdNAME):
-        '''
-        crdNAME: list of pre-defined coordination name [AITM1, AITM2, AITM3]
-        '''
-
-        AITM1, AITM2, AITM3     = crdNAME
-
-        self.__dictDim__        = OrderedDict()
-        self.__dictDim__[ 'z' ] = array( self.get_coord( AITM3 )[1].flatten() )
-        self.__dictDim__[ 'y' ] = array( self.get_coord( AITM2 )[1].flatten() )
-        self.__dictDim__[ 'x' ] = array( self.get_coord( AITM1 )[1].flatten() )
-
-        self.names  = (AITM3, AITM2, AITM1)
-
-
-    def get_coord(self,crdName):
-        srcFName    = 'GTAXLOC.%s'%crdName
-        srcPath     = os.path.join(GTOOL_DIR,srcFName)
-
-        self.curr       = 0
-        self.hdrBytes   = 1032      # = 4+1024+4
-        self.__rawArray__  = memmap(srcPath, 'S1', 'r')
-
-        Headers, Vars   = self.scan_structure()
-
-        crdName         = Vars.keys()[0]
-
-        return crdName, Vars[crdName][0][:]
-
-
-    def __getitem__(self,k):
-        return self.__dictDim__[k]
-
-
-    def __repr__(self):
-
-        strDim      = ['\n   ** DIMENSIONS **   ',]
-        dimFmt      = '[ %s]  %-16s :%s, (%i)'
-
-        for crdName, axName in map( None, self.names, self.__dictDim__.keys() ):
-            aCrd    = self.__dictDim__[axName]
-            strDim.append( dimFmt%(axName, crdName, '[%s ... %s]'%(aCrd[0],aCrd[-1]) if aCrd != [] else '[]', len(aCrd)) )
-#            print '[%s ... %s]'%(str(aCrd[0]),str(aCrd[0])),  array([0.0])==[]
-
-        return '\n'.join(strDim)
-
-
 
 def main(args,opts):
-    print args
-    print opts
+    print(  args )
+    print(  opts )
 
     return
 
@@ -401,7 +347,7 @@ if __name__=='__main__':
     (options,args)  = parser.parse_args()
 
 #    if len(args) == 0:
-#        parser.print_help()
+#        parser.print( _help()
 #    else:
 #        main(args,options)
 

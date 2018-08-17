@@ -26,7 +26,8 @@ except:
 from    gtcfg           import __gtConfig__
 
 
-class __gtHdrFmt__(object):
+class __gtHdrFmt__( object ):
+
     fmt = OrderedDict([
 ("IDFM",[int,"%16i",9010]),     ("DSET",[str,"%-16s",'']),      ("ITEM",[str,"%-16s",'']),      #00
 ("EDIT1",[str,"%-16s",'']),     ("EDIT2",[str,"%-16s",'']),     ("EDIT3",[str,"%-16s",'']),     #03
@@ -86,7 +87,7 @@ class __gtHdrFmt__(object):
         headers : <list> of header
         '''
 
-        keys    = self.fmt.keys()
+        keys    = list( self.fmt.keys() )
 
         if headers == None:
 
@@ -129,7 +130,7 @@ class __gtHdrFmt__(object):
     '''
 
 
-class __gtHdr__(__gtHdrFmt__):
+class __gtHdr__( __gtHdrFmt__ ):
 
     def __init__(self, headers=None, **kwargs):
         '''
@@ -186,9 +187,9 @@ class __gtHdr__(__gtHdrFmt__):
 
         '''
         for k,v in map( None, self.keys, hdr ):
-            print k,v
-        print self.keys.index(k), hdr[63]
-        print put2note
+            print(  k,v
+        print(  self.keys.index(k), hdr[63]
+        print(  put2note
         '''
 
         strOut      = [ ]
@@ -222,6 +223,7 @@ class __gtHdr__(__gtHdrFmt__):
             strNote.append( noteFmt%( idx, k, '[%s ... %s]'%(v[0], v[-1]), len(v) ) )
 
         return '\n'+'\n'.join(strOut + strNote)+'\n'
+        # @@ add dimensions (i.e., AITM1, AITM2, AITM3)
         # ----------------------------------------------------------------------
 
 
@@ -245,9 +247,9 @@ class __gtHdr__(__gtHdrFmt__):
                               fmt%fn( v )
 
 
-#        print self.__headers__
-#        print type( self.__headers__ )
-#        print v, type(v), len(v), len( fmt%v )
+#        print(  self.__headers__
+#        print(  type( self.__headers__ )
+#        print(  v, type(v), len(v), len( fmt%v )
         return
 
 
@@ -286,8 +288,8 @@ class __gtHdr__(__gtHdrFmt__):
 
 
 def main(args,opts):
-    print args
-    print opts
+    print(  args )
+    print(  opts )
 
     return
 
@@ -304,7 +306,7 @@ if __name__=='__main__':
     (options,args)  = parser.parse_args()
 
 #    if len(args) == 0:
-#        parser.print_help()
+#        parser.print( _help()
 #    else:
 #        main(args,options)
 

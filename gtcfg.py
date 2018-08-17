@@ -19,14 +19,15 @@ class __gtConfig__(object):
 
     hdrsize     = 1032          # = 4+1024+4
 
-    chksumHdr   = list( struct.pack( '>i4', hdrsize-8 ) ) # w/o checksum
+    chksumHdr   = list( struct.pack( '>i', hdrsize-8 ) ) # w/o checksum # python3?
+    #chksumHdr   = list( struct.pack( '>i4', hdrsize-8 ) ) # w/o checksum
 
     version     = '0.55'
 
 
 def main(args,opts):
-    print args
-    print opts
+    print(  args )
+    print(  opts )
 
     return
 
@@ -43,7 +44,7 @@ if __name__=='__main__':
     (options,args)  = parser.parse_args()
 
 #    if len(args) == 0:
-#        parser.print_help()
+#        parser.print( _help()
 #    else:
 #        main(args,options)
 

@@ -21,42 +21,42 @@ from    gtfile          import gtFile   as gtopen
 def test_chunkwise_encoding( aSrc, outPath ):
     gtOut       = gtopen( outPath, mode='w+' )
 
-    print '\t## encoding (version: %s) ###'%gtOut.__version__
-    print '\t   source array:', aSrc.shape, aSrc.dtype, 'Min:%s'%aSrc.min(), 'Max:%s'%aSrc.max()
-    print
+    print(  '\t## encoding (version: %s) ###'%gtOut.__version__ )
+    print(  '\t   source array:', aSrc.shape, aSrc.dtype, 'Min:%s'%aSrc.min(), 'Max:%s'%aSrc.max() )
+    print( )
 
     for a in aSrc:
 
-        print '\t\tappend:', a.shape, a.min(), a.max()
+        print(  '\t\tappend:', a.shape, a.min(), a.max() )
         gtOut.append( a )
 
-    print
-    print '\t   out path: %s'%outPath, gtOut.vars
-    print '='*80
+    print( )
+    print(  '\t   out path: %s'%outPath, gtOut.vars )
+    print(  '='*80 )
 
     return True
 
 
 def test_chunkwise_decoding( srcPath, aSrc ):
     gtSrc       = gtopen( srcPath, 'r' )
-    print '\t## decoding (version: %s) ###'%gtSrc.__version__
-    print '\t   source file:', srcPath
-    print
+    print(  '\t## decoding (version: %s) ###'%gtSrc.__version__ )
+    print(  '\t   source file:', srcPath )
+    print( )
 
     Data    = []
     for chunk in gtSrc:
 
         data    = chunk.data
-        print '\t\tget a chunk:', data.shape, data.min(), data.max(), data.dtype
+        print(  '\t\tget a chunk:', data.shape, data.min(), data.max(), data.dtype )
 
         Data.append( data )
 
     Data    = array( Data )
     chkFlag     = all(Data.flatten() == aSrc.flatten())
 
-    print
-    print '\t   identical to aSrc?', chkFlag, Data.shape
-    print '='*80
+    print( )
+    print(  '\t   identical to aSrc?', chkFlag, Data.shape )
+    print(  '='*80 )
 
     return chkFlag
 
@@ -65,26 +65,29 @@ def test_modification( srcPath ):
     gtSrc       = gtopen( srcPath, 'r+' )#, struct='simple' )
     gtVar       = gtSrc.vars['']
 
-    print '\t## modification (version: %s) ###'%gtSrc.__version__
-    print '\t   source file:', srcPath
-    print
+    print(  '\t## modification (version: %s) ###'%gtSrc.__version__ )
+    print(  '\t   source file:', srcPath )
+    print( )
 
-    print '\t origial header'
-    print gtVar.header
+    print(  '\t origial header' )
+    print(  gtVar.header )
 
     varName     = 'test'
     gtVar.header['ITEM']    = varName
-    print '\t   set "ITEM" as "test"'
+    print(  '\t   set "ITEM" as "test"' )
+
+    gtVar.header['UTIM']    = 'DAY'
+    print(  '\t   set "UTIM" as "DAY"' )
 
     sDTime      = datetime.datetime(2000,1,1)
     delT        = datetime.timedelta(days=1)
     DTime       = [sDTime+delT*i for i in range( gtVar.shape[0] ) ]
     TStamp      = [dtime.strftime('%Y%m%d %H%M%S ') for dtime in DTime ]
     gtVar.header['DATE']    = TStamp
-    print '\t   set "DATE" as %s - %s'%(TStamp[0], TStamp[-1])
+    print(  '\t   set "DATE" as %s - %s'%(TStamp[0], TStamp[-1]) )
 
-    print gtVar.header
-    print '='*80
+    print(  gtVar.header )
+    print(  '='*80 )
 
     chkFlag     = ( gtVar.header['DATE'] == tuple(TStamp) )     \
                  &( varName == gtVar.header['ITEM'].strip() )
@@ -97,29 +100,42 @@ def test_varwise_decoding( srcPath, aOri ):
     gtSrc       = gtopen( srcPath, 'r', struct='simple' )
     gtVar       = gtSrc.vars['test']
 
-    print '\t## variable-wise decoding (version: %s) ###'%gtSrc.__version__
-    print '\t   source file:', srcPath
-    print
+    print(  '\t## variable-wise decoding (version: %s) ###'%gtSrc.__version__ )
+    print(  '\t   source file:', srcPath )
+    print( )
 
-    print '\t   variables in gt file:', gtSrc.vars
-    print '\t   "test" variable     :', gtVar
-    print '\t   header of "test" var:', gtVar.header
+    print(  '\t   variables in gt file:', gtSrc.vars )
+    print(  '\t   "test" variable     :', gtVar )
+    print(  '\t   header of "test" var:', gtVar.header )
 
     aSrc       = gtVar[:]
 
     for a in aSrc:
 
-        print '\t\titer aSrc:', a.shape, a.min(), a.max()
+        print(  '\t\titer aSrc:', a.shape, a.min(), a.max() )
 
-    print '='*80
+    print(  '='*80 )
 
     chkFlag     = all(aSrc.flatten() == aOri.flatten())
 
-    print
-    print '\t   identical to aOri?', chkFlag, aSrc.shape
-    print '='*80
+    print( )
+    print(  '\t   identical to aOri?', chkFlag, aSrc.shape )
+    print(  '='*80 )
 
     return chkFlag
+
+
+def test_export_to_netcdf( srcPath, ncPath ):
+    print '\t## export to netcdf ###'
+    print '\t   source file:', srcPath
+    print '\t   netcdf file:', ncPath
+
+    gtSrc       = gtopen( srcPath, 'r' )
+    gtVar       = gtSrc.vars[ 'test' ]
+
+    print gtVar.export2nc( ncPath, mode='w' )
+
+    return True
 
 
 def main(args,opts):
@@ -128,20 +144,22 @@ def main(args,opts):
 
     outPath     = './test.gt'
 
-    print
-    print 'testing cf.io.gtool...'
-    print
+    print( )
+    print(  'testing cf.io.gtool...' )
+    print( )
 
     aSrc        = arange(10*180*360).reshape(10,1,180,360)
     aSrc        = aSrc.astype('float32')
-    print '='*80
+    print(  '='*80 )
 
     testFlag.append( test_chunkwise_encoding( aSrc, outPath ))
     testFlag.append( test_chunkwise_decoding( outPath, aSrc ))
     testFlag.append( test_modification( outPath )            )
     testFlag.append( test_varwise_decoding( outPath, aSrc )  )
+    testFlag.append( test_export_to_netcdf( outPath, outPath[:-3]+'.nc' ) )
 
-    print testFlag
+
+    print(  testFlag )
 
     return all( testFlag )
 
@@ -166,7 +184,7 @@ def main(args,opts):
 
         gtOut.append(aOut, gt.header.template( **d ))
 
-        print gt.header['ITEM'], gt.data.shape, gt.data.dtype, aOut.shape, aOut.dtype
+        print(  gt.header['ITEM'], gt.data.shape, gt.data.dtype, aOut.shape, aOut.dtype
     '''
 
 
@@ -183,7 +201,7 @@ if __name__=='__main__':
     (options,args)  = parser.parse_args()
 
 #    if len(args) == 0:
-#        parser.print_help()
+#        parser.print( _help()
 #    else:
 #        main(args,options)
 

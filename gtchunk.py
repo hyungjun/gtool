@@ -119,8 +119,8 @@ class __gtChunk__( __gtConfig__ ):
 
 
 def main(args,opts):
-    print args
-    print opts
+    print(  args )
+    print(  opts )
 
     return
 
@@ -137,7 +137,7 @@ if __name__=='__main__':
     (options,args)  = parser.parse_args()
 
 #    if len(args) == 0:
-#        parser.print_help()
+#        parser.print( _help()
 #    else:
 #        main(args,options)
 

@@ -15,77 +15,99 @@ from    optparse                    import OptionParser
 
 import  numpy       as np
 
-
-class DimensionPreset( object ):
-    presets     = {
-                    'GLON': [ 'linear', ( 0, 360) ],
-                    'GLAT': [ 'linear', (-90, 90) ],
-            }
-    pass
+from    coords                      import Coords
 
 
-class gtDim( DimensionPreset ):
+class __gtDim__( Coords ):
 
-    def __init__( self, dimcode ):
+    def __init__( self, dimensions, dimnames=['AITM1', 'AITM2', 'AITM3'] ):
+
+        print dimensions
+
+        for dim, dname in map( None, dimensions, dimnames ):
+
+            setattr( self, dname, Dimemsion( dim, dname ) )
+
+        self.dimnames   = dimnames
+            
+
+    def __repr__(self):
+
+        return '\n'.join( [ str( self.__dict__[ dname ] ) for dname in self.dimnames ] )
+
+
+class Dimemsion( Coords ):
+
+    def __init__( self, dimension, dimname ):
         '''
-        dimcode     <str>       ex) 'GLON360IM'
+        @IN
+        dimension   <str>       dimcode ex) 'GLON360IM'
+                    <1d-array>  coordinates 
+
+        dimname     <str>       gtool axis ['AITM1', 'AITM2', 'AITM3']
+
+        e.g.) Dimemsion( 'GLON360M', 'AITM1' )
+
+        @@ 'NUMBER' is default when if dimid (e.g., GLON, GLAT,..) has not been defind at ./coords
         '''
 
-        self.dimcode            = dimcode
-        dimid, nitem, auxcode   = self.decode_dimecode()
+        if type( dimension ) == str:
 
-        self.dimid              = dimid
-        self.nitem              = int( nitem )
-        self.auxcode            = '' if auxcode == None     else auxcode
+            dimid, nitem, auxcode   = self.decode_dimecode( dimension )
+            auxcode                 = '' if auxcode == None     else auxcode
 
-        self.coords             = self.get_coords()
+            self.coords             = getattr( self, dimid, self.NUMBER )( int( nitem ), auxcode )
+            self._dimcode           = dimension
+
+            #if hasattr( self, dimid )   \
+            #                     else '{} but used "NUMBER" because not pre-defined yet'.format( dimension )
+
+        else:
+
+            self.coords             = dimension
+
+        self.dimname    = dimname
 
 
-    def decode_dimecode( self ):
+    @property
+    def dimcode( self ):
+
+        dimid   = self.decode_dimecode( self._dimcode )[0]
+        dimcode = self._dimcode
+
+        if hasattr( self, '_dimcode' ):
+            return dimcode if hasattr( self, dimid )        \
+              else '{} replaced with "NUMBER{}" because yet pre-defined'.format( self._dimcode, self.coords.size )
+
+        else:
+            return 'undefined'
+
+
+    def decode_dimecode( self, dimension ):
         '''
         @return
         dimid, nitem, auxcode
         '''
-        return re.match( r'^([A-Z]+)(\d+)([A-Z]+)?', self.dimcode ).groups()
-
-
-    def get_coords( self ):
-
-        if not self.dimid in self.presets:
-            raise KeyError, '{} is not defined yet.'.format(self.dimid)
-
-        else:
-            crdtype, bounds     = self.presets[ self.dimid ]
-
-        if crdtype == 'linear':
-
-            offset  = abs( (bounds[0] - bounds[1]) / 2. / self.nitem ) if 'M' in self.auxcode   \
-                 else 0
-
-            coords  = np.linspace( bounds[0]+offset, bounds[1]-offset, self.nitem )
-
-        else:
-            raise ValueError, '{} is not supported yet.'.format( crdtype )
-         
-
-        if 'I' in self.auxcode:
-            return coords[::-1]
-
-        else:
-            return coords
+        return re.match( r'^([A-Z]+)(\d+)([A-Z]+)?', dimension ).groups()
 
 
     def __repr__(self):
 
-        strDim      = ['\n   ** DIMENSIONS **   ',]
-        dimFmt      = '[ %s]  %-16s :%s, (%i)'
-        axname      = ' '
+        strDim      = []
+        dimFmt      = '** DIM [%s] %s (%i; %s) **'
 
-        strDim.append( dimFmt%( axname, 
-                                self.dimcode, 
-                                self.coords,
-                                #'[%s ... %s]'%(self.coords[0], self.coords[-1]) if self.coords != [] else '[]', 
-                                len( self.coords ) ))
+        strcoords   = str( self.coords ) if self.coords.size < 8    \
+                 else ' '.join( [ str( self.coords[:3] )[:-1], '...',
+                                  str( self.coords[-3:])[1:] ] )
+
+        strcoords   = '%-45s,'%strcoords
+
+        strDim.append( dimFmt%( 
+                                self.dimname, 
+                                strcoords,
+                                len( self.coords ),
+                                self.dimcode,
+                                ))
 #        print(  '[%s ... %s]'%(str(aCrd[0]),str(aCrd[0])),  array([0.0])==[] )
 
         return '\n'.join(strDim)
@@ -96,8 +118,17 @@ def main(args,opts):
     print(  args )
     print(  opts )
 
-    print gtDim( 'GLON360M'  )
-    print gtDim( 'GLAT180IM' )
+    #print Dimemsion( 'GLON360M', 'AITM1'  )
+    #print Dimemsion( 'GLAT180IM' )
+    #print Dimemsion( np.linspace(-89.5,89.5,180), dimname='latitudes' )
+
+    gtdim   = __gtDim__( ['GLON360M', 'GLAT180IM', 'WLEVC6'] )
+
+    print gtdim
+
+    #print gtdim.AITM1
+    #print gtdim.AITM2
+    #print gtdim.AITM3
 
 
     return

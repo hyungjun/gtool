@@ -17,8 +17,8 @@ from    gtfile          import gtFile           as gtopen
 
 
 def main(args,opts):
-    print args
-    print opts
+    print( args )
+    print( opts )
 
     return
 
