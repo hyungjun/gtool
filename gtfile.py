@@ -133,11 +133,11 @@ class gtFile( __gtHdrFmt__ ):
             gtFile.close()
 
             self.__rawArray__   = array([], 'S1')
-            self.gtPath         = gtPath
 
         else:
             raise ValueError( '%s is not supported option'%mode )
 
+        self.gtPath         = gtPath
 
         self.curr       = 0
         self.hdrBytes   = __gtConfig__.hdrsize
@@ -267,7 +267,7 @@ class gtFile( __gtHdrFmt__ ):
 
     def append(self, Data, headers=None, **kwargs):
         '''
-        Data    : nd-array in rank-3 (Z, Y, X)
+        Data    : nd-array in rank-4 (T, Z, Y, X)
         headers : <type>    in [ __gtHdr__, iterable, ]??,
         '''
 
